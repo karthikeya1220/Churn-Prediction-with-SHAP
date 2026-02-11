@@ -1,104 +1,87 @@
 # Churn Prediction with SHAP
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Datasets](#datasets)
-3. [Exploratory Data Analysis](#exploratory-data-analysis)
-4. [Machine Learning](#machine-learning)
-5. [Explainability with SHAP](#explainability-with-shap)
-6. [Requirements](#requirements)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue.svg)
 
-## Introduction
+## 📌 Introduction
 
-This project aims to build a robust model for predicting customer churn using the Telco Customer Dataset from IBM. Churn prediction is crucial for businesses to identify customers who are likely to leave, enabling them to take proactive measures to retain these customers. The focus of this project is not only on achieving accurate predictions but also on ensuring that these predictions are interpretable and actionable.
+Welcome to the **Churn Prediction with SHAP** project. In this repository, I have developed a robust machine learning pipeline to predict customer churn in the telecommunications sector. My goal was not just to achieve high predictive accuracy, but to ensure that the model's decisions are transparent and interpretable.
 
-To achieve this, the project integrates the SHAP (SHapley Additive exPlanations) algorithm, a powerful tool for model explainability. SHAP provides both global and local explanations, helping data scientists and business stakeholders understand which factors contribute most to customer churn. This dual focus on prediction accuracy and explainability is essential in making the model’s insights both trustworthy and actionable for business decisions.
+To achieve this, I integrated **SHAP (SHapley Additive exPlanations)**, a cutting-edge method from cooperative game theory. This allows us to peer inside the "black box" of complex models like XGBoost and CatBoost, understanding exactly *why* a specific customer is at risk of leaving.
 
-The analysis provides valuable insights into the risk factors for customer churn, guiding companies on where to focus their retention efforts. This combination of predictive modeling and explainability offers a comprehensive tool for businesses looking to reduce churn and improve customer loyalty.
+This project serves as a comprehensive guide to building trustworhy AI systems for business retention strategies.
 
+## 📂 Project Structure
 
-## Datasets
+I have organized the project using a modular, object-oriented approach to ensure scalability and reproducibility.
 
-These datasets were taken from [here](https://accelerator.ca.analytics.ibm.com/bi/?perspective=authoring&pathRef=.public_folders/IBM+Accelerator+Catalog/Content/DAT00148&id=i9710CF25EF75468D95FFFC7D57D45204&objRef=i9710CF25EF75468D95FFFC7D57D45204&action=run&format=HTML&cmPropStr=%7B%22id%22:%22i9710CF25EF75468D95FFFC7D57D45204%22,%22type%22:%22reportView%22,%22defaultName%22:%22DAT00148%22,%22permissions%22:%5B%22execute%22,%22read%22,%22traverse%22%5D%7D)
+- **`src/`**: Contains the core Python modules.
+    - `data_viz.py`: My custom `EDA` class for automated data analysis and geospatial visualization.
+    - `feature_eng.py`: Logic for encoding, scaling, and advanced feature selection (including BorutaShap).
+    - `ml_model.py`: The `ModelPipeline` class that handles training, cross-validation, and metric tracking.
+    - `exp.py`: Scripts for generating SHAP values and explainability plots.
+- **`Data/`**: Contains the IBM Telco datasets.
+- **`Notebooks`**:
+    - `Exploratory.ipynb`: My detailed walkthrough of the data analysis phase.
+    - `Classification.ipynb`: The training and evaluation of various machine learning models.
+    - `SHAP.ipynb`: Deep dive into model interpretability.
 
-These are Telecommunications Industry Sample Data given by IBM. The Telco customer churn data contains information about a fictional telco company that provided home phone and Internet services to 7043 customers in California in Q3. It indicates which customers have left, stayed, or signed up for their service. Multiple important demographics are included for each customer, as well as a Satisfaction Score, Churn Score, and Customer Lifetime Value (CLTV) index.
+## 📊 Exploratory Data Analysis (EDA)
 
-I analyzed these datasets about:
-* Demographics information
-* Location information
-* Population information
-* Services information
-* Status information
-* a complete [dataset](Data/CustomerChurn.xlsx) about Customer Churn. This is the dataset I used to make prediction and explanations
+I placed a strong emphasis on understanding the data before modeling. Using my custom `EDA` class, I performed:
 
+*   **Geospatial Analysis**: Validated customer locations in California using **GeoPandas**.
+*   **Distribution Analysis**: Examined the skew and spread of numerical features.
+*   **Correlation Checks**: Identified key relationships between demographics, services, and churn.
 
-## Exploratory Data Analysis
+<img src="Images/California_GeoPandas.png" alt="Geospatial Analysis" width="600"/>
 
-## Exploratory Data Analysis
+## 🧠 Machine Learning Pipeline
 
-In this project, I applied Object-Oriented Programming (OOP) principles by creating a custom `EDA` class [here](src/data_viz.py). This class encapsulates all the necessary methods for performing statistical analysis and data visualization across different datasets. The use of OOP provided several advantages:
+I implemented a flexible pipeline capable of training and comparing multiple models:
 
-- **Code Reusability**: By defining the `EDA` class, I was able to reuse the same code structure across various datasets, eliminating redundancy and ensuring consistency in the analysis process.
-- **Scalability**: The class-based approach allowed me to easily extend and adapt the analysis to new datasets with minimal changes, making the code highly scalable.
-- **Modularity**: The encapsulation of EDA functionalities within a class enhanced the modularity of the code, simplifying maintenance and future enhancements.
+*   **Logistic Regression**
+*   **Random Forest**
+*   **XGBoost**
+*   **CatBoost** (Optimized for categorical data)
 
-The results and insights obtained from the EDA are comprehensively documented within the [notebook](Exploratory.ipynb)'s markdown cells. Each step is clearly explained, commented on, and supported by visualizations that aid in understanding the underlying data patterns.
+### Handling Imbalanced Data
+Since churn is a rare event, I employed advanced sampling techniques to ensure the model learns effectively:
+*   **SMOTE** (Synthetic Minority Over-sampling Technique)
+*   **ADASYN**
+*   **Stratiifed K-Fold Cross-Validation**: To guarantee robust and unbiased performance metrics.
 
-### Geographical Data Visualization
+## 🔍 Explainability with SHAP
 
-One of the highlights of the EDA was the visualization of geographical data using **GeoPandas**. By mapping the latitude and longitude points of the dataset onto a map of California, sourced from [Natural Earth Data](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-1-states-provinces/), I was able to confirm that all spatial points indeed fell within California's borders. This spatial analysis provided valuable context and ensured the geographical integrity of the dataset. The use of GeoPandas not only facilitated the accurate plotting of points but also allowed for a seamless integration with base maps, offering a clear and informative geographical visualization. Here, you can see the plot:
+The core innovation of this project is the integration of SHAP. I moved beyond simple feature importance charts to provide:
 
-<img src="Images/California_GeoPandas.png" alt="Churn Analysis" width="450" height="450"/>
-
-
-## Machine Learning
-
-In this project, I implemented a robust and scalable machine learning pipeline by creating a custom `ModelPipeline` class, located in the [`ml_model.py`](src/ml_model.py) file. This object-oriented approach provides several key advantages, such as code reusability, scalability, and the flexibility to easily extend the pipeline with new models and techniques.
-
-### Default Models and Flexibility
-The `ModelPipeline` class is designed with several default machine learning models, including:
-- **Logistic Regression**
-- **Random Forest**
-- **XGBoost**
-
-Additionally, I integrated **CatBoost**, which is particularly effective for handling categorical features and imbalanced datasets. The modular design of the `ModelPipeline` class allows for seamless integration of these models and the ability to switch between them effortlessly, depending on the specific needs of the analysis.
-
-### Handling Imbalanced Classes
-A significant challenge in churn prediction is dealing with imbalanced classes. To address this, I incorporated methods such as **SMOTE** (Synthetic Minority Over-sampling Technique) and **ADASYN** (Adaptive Synthetic Sampling) within the `ModelPipeline`. These techniques were applied during the stratified cross-validation process to balance the classes and improve model performance.
-
-### Performance Evaluation
-The `ModelPipeline` also includes methods for evaluating model performance, both during training and on test datasets. I utilized various metrics to assess the models' effectiveness, ensuring a comprehensive understanding of their predictive capabilities.
-
-### Results and Insights
-All results, including model performance metrics, are completely documented and discussed in the Jupyter [notebook](Classification.ipynb). The Markdown cells within these notebooks provide detailed explanations and insights, making it easy to understand the outcomes and implications of each experiment. For a deeper understanding, I recommend reviewing the notebooks directly.
-
-
-## Explainability with SHAP
-
-SHAP (SHapley Additive exPlanations) is a powerful tool for model interpretability, based on Shapley values from cooperative game theory. It provides a unified measure of feature importance by attributing the contribution of each feature to every individual prediction. SHAP's key advantage lies in its ability to deliver both global and local interpretability, offering insights into model behavior across the entire dataset and for individual predictions.
-
-In this project, I utilized SHAP with models that performed well with SMOTE, specifically **XGBoost** and **CatBoost**. XGBoost was chosen for its high performance with balanced datasets, while CatBoost was included to evaluate its behavior with categorical features and its integration with SHAP. All analyses were conducted using stratified cross-validation to ensure robust results.
-
-### Analysis and Visualizations
-I performed a range of global and local analyses to understand model predictions better:
-
-- **Global Analysis**: Beeswarm plots and bar plots were used to visualize overall feature importance and the distribution of Shapley values across features.
-- **Local Analysis**: Detailed examination of individual predictions was carried out using force plots, decision plots, and waterfall plots.
-
-A notable example of the dependency plot from CatBoost illustrates the interaction between **Tenure** and **Contract**. The plot reveals that clients with contracts longer than one or two years are more likely to stay, whereas clients with month-to-month contracts tend to churn.
+*   **Global Interpretability**: Which features drive churn across the entire customer base? (e.g., Contract Type, Tenure).
+*   **Local Interpretability**: Why did *Customer X* specifically churn? (e.g., High monthly charges combined with a month-to-month contract).
 
 ![Dependency Plot Example](Images/SHAP_Tenure_vs_Contract.png)
 
-For a detailed understanding of the results and visualizations, I encourage you to explore the Jupyter [notebook](SHAP.ipynb). They contain comprehensive explanations and comments on all the graphs, helping to interpret the findings effectively.
+## 🚀 Getting Started
 
+To replicate my results or extend this work:
 
-## Requirements
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/karthikeya1220/Churn-Prediction-with-SHAP.git
+    cd Churn-Prediction-with-SHAP
+    ```
 
-To run this project, ensure you have the following installed:
+2.  **Install dependencies**:
+    I recommend using a virtual environment with Python 3.11.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-* **Python 3.11.x**: The project is developed and tested with Python 3.11.x. Make sure you have this version installed.
+3.  **Run the analysis**:
+    You can explore the notebooks in the order: `Exploratory.ipynb` -> `Classification.ipynb` -> `SHAP.ipynb`.
 
-* Using the [requirements.txt](requirements.txt), you can install the necessary dependencies by running the following command:
+## 📬 Contact
 
-```bash
-pip install -r requirements.txt
+**Darshan Karthikeya**  
+*Data Scientist & Engineer*
+
+Feel free to reach out if you have questions or want to collaborate on similar projects!
